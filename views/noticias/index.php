@@ -17,7 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Noticias', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-
+    <!--con gridview tenemos un ActiveRecord. con el dataProvider se envia la consulta
+    Se lo hariamos con DAO utilizaremos un sqlDataProvider-->
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [

@@ -182,7 +182,7 @@ class NoticiasController extends Controller {
             'columnas'=>['titulo'],
         ]);
     }
-
+    //consultas DAO
     public function actionConsulta3() {
 
         $totalCount = Yii::$app->db
@@ -204,5 +204,81 @@ class NoticiasController extends Controller {
             'columnas'=>['titulo'],
         ]);
     }
+    public function actionConsulta3a(){
+        
+        //consulta DAO
+        $salida = yii::$app->db
+                ->createCommand('SELECT titulo FROM noticias');
+                
+        
+        return $this->render('locura',[
+            'datos'=>$salida->queryAll()
+            
+        ]);
+    }
+    public function actionConsulta3b(){
+        
+        //consulta DAO
+        $numero = yii::$app->db
+                ->createCommand('SELECT count(*) FROM noticias')
+                ->queryScalar();//se utiliza cuando devuelve un numero o total
+        //para realizar la consulta con DAO utilizaremos un sqlDataProvider--
+        //con sqlDAtaProvider hay que pasarle el total de registros de nuestra consulta para que optimice las paginacion y demas. No es obligatorio.
+        //con DataProvider no es necesario pq ya lo tiene el propio controlador
+        $dataProvider = new SqlDataProvider([
+            'sql' => 'SELECT titulo from noticias',
+            'totalCount' => $numero,
+        ]);
+        
+        return $this->render('index_1',[
+            'dataProvider' => $dataProvider,
+            'titulo'=>'Titulo de las noticias',
+            'descripcion' =>'SELECT titulo from noticias',
+            'columnas'=>['titulo'],
+                
+            
+        ]);
+    }
+    
+      public function actionConsulta4(){
+        
+        $dataProvider = new ActiveDataProvider([
+            'query' => Noticias::find()
+                ->select("titulo,texto")
+                //->where("id between 1 and 3"),
+                //con array, mejor opcion para abstraerse(que se adapte a cualquier plataforma) ->where("and",[">=","id",1],["<=","id",3]),
+                ->where("id>=1 and id<=3"),
+        ]);
+
+        return $this->render('index_1', [
+            'dataProvider' => $dataProvider,
+            'titulo'=>'Titulo del titulo y texto de las noticias con id entre 1 y 3 (ActiveRecord)',
+            'descripcion' =>'select titulo,texto from noticias where id between 1 and 3',
+            'columnas'=>['titulo','texto']
+        ]);
+      }    
+         public function actionConsulta4a(){
+        
+        //consulta DAO
+        $numero = yii::$app->db
+                ->createCommand('SELECT count(*) FROM noticias where id between 1 and 3')
+                ->queryScalar();
+        
+        $dataProvider = new SqlDataProvider([
+            'sql' => 'SELECT titulo,texto from noticias where id between 1 and 3',
+            'totalCount' => $numero,
+        ]);
+        
+        return $this->render('index_1',[
+            'dataProvider' => $dataProvider,
+            'titulo'=>'Titulo de las noticias (DAO)',
+            'descripcion' =>'SELECT titulo,texto from noticias where id between 1 and 3',
+            'columnas'=>['titulo','texto']
+                
+            
+        ]);
+        
+    }
+    
 }
     
