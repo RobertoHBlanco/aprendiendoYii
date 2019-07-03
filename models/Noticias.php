@@ -13,6 +13,8 @@ use Yii;
  */
 class Noticias extends \yii\db\ActiveRecord
 {
+    public $corto;
+    
     /**
      * {@inheritdoc}
      */

@@ -52,6 +52,8 @@ AppAsset::register($this);
                                     ['label' => 'Consulta 3b', 'url' =>['/noticias/consulta3b']],
                                     ['label' => 'Consulta 4a', 'url' =>['/noticias/consulta4']],
                                     ['label' => 'Consulta 4b', 'url' =>['/noticias/consulta4a']],
+                                    ['label' => 'Consulta 5', 'url' =>['/noticias/consulta5']],
+                                   ['label' => 'Consulta 5a', 'url' =>['/noticias/consulta5a']],
                             ],
             
             ],     

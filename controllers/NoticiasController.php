@@ -172,14 +172,17 @@ class NoticiasController extends Controller {
 
     public function actionConsulta2() {
         $dataProvider = new ActiveDataProvider([
-            'query' => Noticias::findBySql("select titulo from noticias"),
+            'query' => Noticias::findBySql("select left(titulo,2) iniciales,titulo from noticias"),
         ]);
+        
+        // No acepta pagination por el findbysql
+        
 
         return $this->render('index_1', [
                     'dataProvider' => $dataProvider,
              'titulo'=>'Titulo de las noticias',
             'descripcion' =>'SELECT titulo from noticias',
-            'columnas'=>['titulo'],
+            'columnas'=>['iniciales','titulo'],
         ]);
     }
     //consultas DAO
@@ -193,7 +196,7 @@ class NoticiasController extends Controller {
             'sql' => 'SELECT titulo from noticias',
             'totalCount' => $totalCount,
             'pagination' => [
-                'pageSize' => 2,
+                'pageSize' => 1,
             ],
         ]);
 
@@ -279,6 +282,45 @@ class NoticiasController extends Controller {
         ]);
         
     }
+ 
+     public function actionConsulta5(){
+        
+        //consulta DAO
+        $numero = yii::$app->db
+                ->createCommand('SELECT count(*) FROM noticias')
+                ->queryScalar();
+       
+       $dataProvider = new SqlDataProvider([
+            'sql' => 'SELECT CONCAT(LEFT(texto,10),"...") corto,texto FROM noticias',
+            'totalCount' => $numero,
+        ]);
+        
+        return $this->render('index_1',[
+            'dataProvider' => $dataProvider,
+            'titulo'=>'Texto corto y completo de las noticias (DAO)',
+            'descripcion' =>'SELECT CONCAT(LEFT(texto,2),"...") corto,texto FROM noticias',
+            'columnas'=>['corto','texto'],
+        ]);
+        
+    }
+    public function actionConsulta5a(){
+        
+        $dataProvider = new ActiveDataProvider([
+            'query' => Noticias::find()
+                ->select(["CONCAT(left(texto,10),'...') corto", 'texto']),
+      
+                //->where("id between 1 and 3"),
+                //con array, mejor opcion para abstraerse(que se adapte a cualquier plataforma) ->where("and",[">=","id",1],["<=","id",3]),
+              //  ->where(""),
+        ]);
+
+        return $this->render('index_1', [
+            'dataProvider' => $dataProvider,
+            'titulo'=>'',
+            'descripcion' =>'select titulo,texto from noticias where id between 1 and 3',
+            'columnas'=>['corto','texto']
+        ]);
+      }    
     
 }
     
